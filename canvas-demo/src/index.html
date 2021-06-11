@@ -1,0 +1,68 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-06-09 11:59:50
+ * @LastEditTime: 2021-06-11 17:25:08
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /canvas-demo/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Cache-Control"   CONTENT="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script type="module">
+      import KlzzSketch from "http://127.0.0.1:3000/klzz-sketch.mjs";
+      window.Sketch = new KlzzSketch({
+        container: document.getElementById('container')
+      })
+      Sketch.setTool('line',{
+        lineWidth: 5,
+        color: '#F00'
+      })
+    </script>
+    <script>
+      layui.use('colorpicker', function(){
+        var colorpicker = layui.colorpicker;
+        //渲染
+        colorpicker.render({
+          elem: '#colorpicker',
+          change: function(color){
+            Sketch.setTool('line',{
+              color: color
+            })
+          }  //绑定元素
+        });
+      });
+      layui.use('slider', function(){
+        var slider = layui.slider;
+      //渲染
+      slider.render({
+        min: 1,
+        max: 10,
+        elem: '#slide',  //绑定元素
+        change: function(value){
+          Sketch.setTool('line',{
+              lineWidth: value,
+            })
+        }
+      });
+    });
+      </script>
+  </head>
+  <body>
+    <div style="margin: 20px 0;">
+      <label>颜色:</label>
+      <div id="colorpicker" style="display:inline-block;"></div>
+      <label>线条宽度:</label>
+      <div id="slide"  style="margin-top: 20px;margin-left: 20px;width: 500px;display: inline-block;"></div>
+    </div>
+    <div id="container" style="width: 1000px;height: 500px;background-color: aliceblue;border: 1px solid #DDD""></div>
+  </body>
+</html>
