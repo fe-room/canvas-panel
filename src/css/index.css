@@ -13,3 +13,7 @@
 .sketch-contaniner.line {
   cursor: url('../img/pen@1x.ico') 5 25, auto;
 }
+
+.sketch-contaniner.eraser {
+  cursor: url('../img/eraser@1x.ico') 5 25, auto;
+}

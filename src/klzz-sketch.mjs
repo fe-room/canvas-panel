@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-11 16:45:13
+ * @LastEditTime: 2021-06-15 14:12:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -17,7 +17,7 @@ import {
 } from "./element/dom.js";
 const TEXT_SIZE = 14;
 const TEXT_HEIGHT = 18;
-const tools = ["line", "rect", "text", "ease", "ellipse", "arrow", "sline"];
+const tools = ["line", "rect", "text", "eraser", "ellipse", "arrow", "sline"];
 const coustomEvents = ["toolchange"];
 class KlzzSketch {
   constructor(options) {
@@ -26,9 +26,11 @@ class KlzzSketch {
     options.width || (options.width = options.container.clientWidth);
     options.height || (options.height = options.container.clientHeight);
     options.toolType || (options.toolType = "line");
+    options.background || (options.background = "");
     this.options = options;
     this.el = this.initElement();
     this.ctx = this.canvas.getContext("2d");
+    this.initBackground();
     this.initDrawCanvas();
     this.appendComponent(this.drawCanvas);
     this.container = this.options.container;
@@ -37,7 +39,7 @@ class KlzzSketch {
     // 根据工具类型的切换 修改鼠标的样式
     on(this.el, "toolchange", (ev) => {
       if (Object.keys(ev.detail).length) {
-        Object.assign(this.options,ev.detail)
+        Object.assign(this.options, ev.detail);
       }
       tools.forEach((item) => {
         hasClass(this.el, item) ? removeClass(this.el, item) : null;
@@ -61,8 +63,10 @@ class KlzzSketch {
     });
   }
   trigger(type, payload) {
+    console.log(type, payload);
     //修改修改自定义事件的传参
     if (payload) {
+      console.log(this[type]);
       Object.assign(this[type].detail, payload);
     }
     if (payload && payload.el) {
@@ -112,7 +116,32 @@ class KlzzSketch {
       });
     });
   }
-
+  initBackground() {
+    if (this.options.background) {
+      const img = new Image();
+      img.src = this.options.background;
+      img.onload = () => {
+        const canvas = this.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const heightRate = this.options.height / img.height;
+        const widthRate = this.options.width / img.width;
+        context.drawImage(
+          img,
+          0,
+          0,
+          img.width,
+          img.height,
+          0,
+          0,
+          img.width * widthRate,
+          img.height * heightRate
+        );
+        this.el.appendChild(canvas);
+      };
+    }
+  }
   appendComponent(component) {
     this.el.appendChild(component.el);
   }

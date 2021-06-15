@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-09 11:59:50
- * @LastEditTime: 2021-06-11 17:25:08
+ * @LastEditTime: 2021-06-15 13:37:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/index.html
@@ -20,7 +20,8 @@
     <script type="module">
       import KlzzSketch from "http://127.0.0.1:3000/klzz-sketch.mjs";
       window.Sketch = new KlzzSketch({
-        container: document.getElementById('container')
+        container: document.getElementById('container'),
+        background: "http://127.0.0.1:3000/background/dd.jpg"
       })
       Sketch.setTool('line',{
         lineWidth: 5,
@@ -28,6 +29,15 @@
       })
     </script>
     <script>
+      function eraser(){
+         Sketch.setTool('eraser')
+      }
+      function back() {
+        console.log('back')
+      }
+      function arrow() {
+        Sketch.setTool('arrow')
+      }
       layui.use('colorpicker', function(){
         var colorpicker = layui.colorpicker;
         //渲染
@@ -60,9 +70,15 @@
     <div style="margin: 20px 0;">
       <label>颜色:</label>
       <div id="colorpicker" style="display:inline-block;"></div>
+      <label>橡皮擦</label>
+      <img src="./img/eraser@1x.ico" alt="" style="cursor: pointer;" onclick="eraser()">
+      <label>回退</label>
+      <img src="./img/back.ico" alt="" style="cursor: pointer;" onclick="back()">
+      <label>生成箭头</label>
+      <img src="./img/back.ico" alt="" style="cursor: pointer;" onclick="arrow()">
       <label>线条宽度:</label>
       <div id="slide"  style="margin-top: 20px;margin-left: 20px;width: 500px;display: inline-block;"></div>
     </div>
-    <div id="container" style="width: 1000px;height: 500px;background-color: aliceblue;border: 1px solid #DDD""></div>
+    <div id="container" style="width: 750px;height: 1000px;background-color: aliceblue;border: 1px solid #DDD""></div>
   </body>
 </html>
