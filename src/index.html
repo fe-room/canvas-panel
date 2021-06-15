@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-09 11:59:50
- * @LastEditTime: 2021-06-15 13:37:40
+ * @LastEditTime: 2021-06-15 18:10:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/index.html
@@ -37,6 +37,9 @@
       }
       function arrow() {
         Sketch.setTool('arrow')
+      }
+      function text(){
+        Sketch.setTool('text')
       }
       layui.use('colorpicker', function(){
         var colorpicker = layui.colorpicker;
@@ -76,6 +79,8 @@
       <img src="./img/back.ico" alt="" style="cursor: pointer;" onclick="back()">
       <label>生成箭头</label>
       <img src="./img/back.ico" alt="" style="cursor: pointer;" onclick="arrow()">
+      <label>输入文字</label>
+      <label style="font-weight: bold;font-size: 20px;width: 30px;cursor: pointer;text-align: center;" onclick="text()">T</label>
       <label>线条宽度:</label>
       <div id="slide"  style="margin-top: 20px;margin-left: 20px;width: 500px;display: inline-block;"></div>
     </div>

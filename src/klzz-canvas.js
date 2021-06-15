@@ -1,16 +1,18 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:14:26
- * @LastEditTime: 2021-06-15 14:12:03
+ * @LastEditTime: 2021-06-15 18:38:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/canvas.js
  */
 import CanvasHelper from "./klzz-helper.js";
+import TextTool from "./klzz-text.js";
 import { on, off } from "./element/dom.js";
 const LINE = "line";
 const ERASER = "eraser";
 const ARROW = "arrow";
+const TEXT = "text";
 class CanvasInstance {
   /**
    * @description:
@@ -50,7 +52,9 @@ class CanvasInstance {
         this[`${this.tool}MousedownListener`](e);
     });
     on(this.el, "mouseup", (e) => {
-      console.log(e);
+      if (this.tool === "text") {
+        this[`${TEXT}MouseupListener`](e);
+      }
     });
   }
   [`${LINE}MousedownListener`](e) {
@@ -165,6 +169,51 @@ class CanvasInstance {
     on(this.el, "mousemove", onmousemove);
     on(this.el, "mouseup", offmousemove);
     on(this.el, "mouseleave", offmousemove);
+  }
+  [`${TEXT}MouseupListener`](e) {
+    console.log(TEXT, "mouseup");
+    if (this.textTool) {
+      this.textTool = null;
+      return;
+    }
+    const x = e.offsetX,
+      y = e.offsetY - 8;
+    const textPoints = [];
+    textPoints.push({ x, y });
+    const textTool = this.textTool = new TextTool(this.parent, {
+      x,
+      y,
+      size: this.options.textSize,
+      lineHeight: this.options.textLineHeight,
+      color: this.color,
+    });
+    console.log(textTool)
+    on(textTool.el, "valuechange", (event) => {
+      const text = event.detail.textValue;
+      this.parent.measureEl.innerHTML = text + "  ";
+      textTool.width(this.parent.measureEl.clientWidth);
+      textTool.height(this.parent.measureEl.clientHeight);
+    });
+    on(textTool.el, "textchange", (event) => {
+      const data = event.detail;
+      if (!data.data) {
+        return;
+      }
+      const textOptions = {
+        el: this.el,
+        position: {
+          x: x / this.ctx.canvas.width,
+          y: y / this.ctx.canvas.height,
+        },
+        color: this.color,
+        text: data.data,
+        size: data.size,
+        lineHeight: data.lineHeight,
+        width: this.parent.measureEl.clientWidth / this.ctx.canvas.width,
+        height: this.parent.measureEl.clientHeight / this.ctx.canvas.height,
+      };
+      this.parent.trigger("text.submit", textOptions);
+    });
   }
 }
 

@@ -1,7 +1,7 @@
 /*
  * @Author: meng.chen
  * @Date: 2021-06-09 12:00:18
- * @LastEditTime: 2021-06-15 16:20:45
+ * @LastEditTime: 2021-06-15 18:40:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/index.js
@@ -151,6 +151,27 @@ class CanvasHelper {
           y: options.points[i - 1].y * canvasHeight,
         }, arrowSize);
     }
+    ctx.restore();
+  }
+  static text(ctx, options) {
+    options.size = options.size || 14;
+    options.lineHeight = options.lineHeight || 18;
+    options.font = options.font || '"PingFang SC","Microsoft YaHei","微软雅黑"';
+    let string = options.text;
+    ctx.save();
+    ctx.textBaseline = 'middle';
+    ctx.font = `${options.size}px/${options.lineHeight}px ${options.font}`;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = options.color || COLOR_RED;
+    if (typeof maxWidth !== 'undefined') {
+      string = string.replace(/<br>/g, '\n').split(/\n/).map(p => transformText(ctx, p, maxWidth)).join('\n');
+    }
+    string.replace(/<br>/g, '\n').split(/\n/).map((value, index) => {
+      ctx.fillText(value,
+        options.position.x * ctx.canvas.width + 2,
+        options.position.y * ctx.canvas.height + index * options.lineHeight + options.lineHeight / 2 + 2);
+      return null;
+    });
     ctx.restore();
   }
   
