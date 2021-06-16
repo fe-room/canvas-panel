@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-09 11:59:50
- * @LastEditTime: 2021-06-16 10:57:39
+ * @LastEditTime: 2021-06-16 14:48:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/index.html
@@ -37,6 +37,9 @@
       }
       function text(){
         Sketch.setTool('text')
+      }
+      function create() {
+        Sketch.synthesisResult()
       }
       layui.use('colorpicker', function(){
         var colorpicker = layui.colorpicker;
@@ -81,7 +84,9 @@
       <label style="font-weight: bold;font-size: 20px;width: 30px;cursor: pointer;text-align: center;" onclick="text()">T</label>
       <label>线条宽度:</label>
       <div id="slide"  style="margin-top: 20px;margin-left: 20px;width: 500px;display: inline-block;"></div>
+      <div onclick="create()">生成图片</div>
     </div>
     <div id="container" style="width: 750px;height: 1000px;background-color: aliceblue;border: 1px solid #DDD""></div>
+    <div id="imgUploadX"></div>
   </body>
 </html>

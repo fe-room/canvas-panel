@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-16 14:11:28
+ * @LastEditTime: 2021-06-16 15:02:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -140,8 +140,8 @@ class KlzzSketch {
       img.onload = () => {
         const canvas = this.createElement("canvas");
         const context = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = this.options.width;
+        canvas.height = this.options.height;
         const heightRate = this.options.height / img.height;
         const widthRate = this.options.width / img.width;
         context.drawImage(
@@ -155,6 +155,7 @@ class KlzzSketch {
           img.width * widthRate,
           img.height * heightRate
         );
+        this.bgCanvas = canvas
         this.el.appendChild(canvas);
       };
     }
@@ -166,6 +167,11 @@ class KlzzSketch {
     this.toolType = toolName;
     this.trigger("toolchange", config);
   }
+  /**
+   * @description: 回退功能
+   * @param {*}
+   * @return {*}
+   */
   revoke() {
     CanvasHelper.clear(this.ctx);
     const canvasData = this.executionStack.pop();
@@ -186,6 +192,54 @@ class KlzzSketch {
       style: `font-size: ${this.options.textSize}px; line-height: ${this.options.textLineHeight}px;`,
     }));
     this.el.appendChild(measureEl);
+  }
+  async synthesisResult() {
+    if(!this.bgCanvas && !this.canvas)return;
+    const bg = this.bgCanvas.toDataURL("image/png");
+    const remark = this.canvas.toDataURL("image/png");
+    const imageAry = await Promise.all([
+      this.wrapPromise(bg),
+      this.wrapPromise(remark),
+    ]);
+    const bgCover = imageAry[0];
+    const remarkCover = imageAry[1];
+    this.drawImage(bgCover, remarkCover);
+  }
+  drawImage(bgCover, remarkCover) {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = bgCover.width;
+    canvas.height = bgCover.height;
+    context.drawImage(
+      bgCover,
+      0,
+      0
+    );
+    context.drawImage(
+      remarkCover,
+      0,
+      0
+    );
+    const file = canvas.toDataURL("image/png");
+    this.transformPic(file)
+  }
+  transformPic(file) {
+    const size = 600;
+    const eleImgUploadX = document.getElementById("imgUploadX");
+    // 预览
+    eleImgUploadX.innerHTML =
+      '<img src="' + file + '" width="' + size + '">';
+  }
+  wrapPromise(src) {
+    const imgCover = new Image();
+    imgCover.src = src;
+    return new Promise((resolve) => {
+      imgCover.onload = () => {
+        resolve(imgCover);
+      };
+    }).catch((err) => {
+      return err;
+    });
   }
 }
 
