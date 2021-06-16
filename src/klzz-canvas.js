@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:14:26
- * @LastEditTime: 2021-06-16 10:15:21
+ * @LastEditTime: 2021-06-16 14:09:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/canvas.js
@@ -113,8 +113,9 @@ class CanvasInstance {
     };
     const mouseup = () => {
       this.parent.trigger("eraser.submit", {
+        el: this.el,
         lineWidth: 20,
-        points: easePoints,
+        points: easePoints
       });
       this.ctx.restore();
       off(this.el, "mousemove", mousemove);

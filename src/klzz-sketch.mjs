@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-16 11:17:03
+ * @LastEditTime: 2021-06-16 14:11:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -112,13 +112,23 @@ class KlzzSketch {
     tools.forEach((type) => {
       on(this.drawCanvas.el, `${type}.submit`, (event) => {
         const data = event.detail;
-        const New = JSON.parse(
-          JSON.stringify({
-            type,
-            data,
-          })
-        );
-        this.executionStack.push(New);
+        let canvasData;
+        if (type === "eraser") {
+          canvasData = this.ctx.getImageData(
+            0,
+            0,
+            this.options.width,
+            this.options.height
+          );
+        } else {
+          canvasData = JSON.parse(
+            JSON.stringify({
+              type,
+              data,
+            })
+          );
+        }
+        this.executionStack.push(canvasData);
         CanvasHelper[type](this.ctx, data);
       });
     });
@@ -158,11 +168,15 @@ class KlzzSketch {
   }
   revoke() {
     CanvasHelper.clear(this.ctx);
-    this.executionStack.pop();
+    const canvasData = this.executionStack.pop();
     if (this.executionStack.length) {
       this.executionStack.forEach((item) => {
         const { type, data } = item;
-        CanvasHelper[type](this.ctx, data);
+        if (type) {
+          CanvasHelper[type](this.ctx, data);
+        } else {
+          this.ctx.putImageData(canvasData, 0, 0);
+        }
       });
     }
   }
