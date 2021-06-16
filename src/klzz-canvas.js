@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:14:26
- * @LastEditTime: 2021-06-16 16:31:11
+ * @LastEditTime: 2021-06-16 16:41:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/canvas.js
@@ -51,7 +51,6 @@ class CanvasInstance {
   }
   initEvent() {
     on(this.el, "mousedown", (e) => {
-      console.log(this.tool);
       this[`${this.tool}MousedownListener`] &&
         this[`${this.tool}MousedownListener`](e);
     });

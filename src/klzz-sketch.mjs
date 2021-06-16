@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-16 15:02:59
+ * @LastEditTime: 2021-06-16 16:58:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -31,6 +31,7 @@ class KlzzSketch {
     this.executionStack = [];
     this.el = this.initElement();
     this.ctx = this.canvas.getContext("2d");
+    this.initKeyBoardEvent();
     this.initBackground();
     this.initDrawCanvas();
     this.appendComponent(this.drawCanvas);
@@ -155,10 +156,25 @@ class KlzzSketch {
           img.width * widthRate,
           img.height * heightRate
         );
-        this.bgCanvas = canvas
+        this.bgCanvas = canvas;
         this.el.appendChild(canvas);
       };
     }
+  }
+  initKeyBoardEvent() {
+    const agent = navigator.userAgent.toLowerCase();
+    const isMac = agent.indexOf("mac") !== -1;
+    document.addEventListener("keydown", (e) => {
+      if (isMac) {
+        if(e.metaKey && e.keyCode === 90 && this.executionStack.length){
+          this.revoke()
+        }
+      } else {
+        if (e.ctrlKey && e.keyCode === 90 && this.executionStack.length) {
+            this.revoke()
+        }
+      }
+    });
   }
   appendComponent(component) {
     this.el.appendChild(component.el);
@@ -194,7 +210,7 @@ class KlzzSketch {
     this.el.appendChild(measureEl);
   }
   async synthesisResult() {
-    if(!this.bgCanvas && !this.canvas)return;
+    if (!this.bgCanvas && !this.canvas) return;
     const bg = this.bgCanvas.toDataURL("image/png");
     const remark = this.canvas.toDataURL("image/png");
     const imageAry = await Promise.all([
@@ -210,25 +226,16 @@ class KlzzSketch {
     const context = canvas.getContext("2d");
     canvas.width = bgCover.width;
     canvas.height = bgCover.height;
-    context.drawImage(
-      bgCover,
-      0,
-      0
-    );
-    context.drawImage(
-      remarkCover,
-      0,
-      0
-    );
+    context.drawImage(bgCover, 0, 0);
+    context.drawImage(remarkCover, 0, 0);
     const file = canvas.toDataURL("image/png");
-    this.transformPic(file)
+    this.transformPic(file);
   }
   transformPic(file) {
     const size = 600;
     const eleImgUploadX = document.getElementById("imgUploadX");
     // 预览
-    eleImgUploadX.innerHTML =
-      '<img src="' + file + '" width="' + size + '">';
+    eleImgUploadX.innerHTML = '<img src="' + file + '" width="' + size + '">';
   }
   wrapPromise(src) {
     const imgCover = new Image();
