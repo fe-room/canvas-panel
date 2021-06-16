@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:14:26
- * @LastEditTime: 2021-06-15 18:38:30
+ * @LastEditTime: 2021-06-16 10:15:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/canvas.js
@@ -13,6 +13,7 @@ const LINE = "line";
 const ERASER = "eraser";
 const ARROW = "arrow";
 const TEXT = "text";
+const COLOR_RED = "#f00";
 class CanvasInstance {
   /**
    * @description:
@@ -185,9 +186,9 @@ class CanvasInstance {
       y,
       size: this.options.textSize,
       lineHeight: this.options.textLineHeight,
-      color: this.color,
+      color: this.options.color || COLOR_RED,
     });
-    console.log(textTool)
+    console.log('color', this.options.color)
     on(textTool.el, "valuechange", (event) => {
       const text = event.detail.textValue;
       this.parent.measureEl.innerHTML = text + "  ";

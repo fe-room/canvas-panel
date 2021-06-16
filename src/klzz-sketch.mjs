@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-16 10:02:05
+ * @LastEditTime: 2021-06-16 10:46:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -18,7 +18,7 @@ import {
 const TEXT_SIZE = 14;
 const TEXT_HEIGHT = 18;
 const tools = ["line", "rect", "text", "eraser", "ellipse", "arrow", "sline"];
-const coustomEvents = ["toolchange", "valuechange", 'textchange'];
+const coustomEvents = ["toolchange", "valuechange", "textchange"];
 class KlzzSketch {
   constructor(options) {
     options.textSize || (options.textSize = TEXT_SIZE);
@@ -28,6 +28,7 @@ class KlzzSketch {
     options.toolType || (options.toolType = "");
     options.background || (options.background = "");
     this.options = options;
+    this.actionStack = [];
     this.el = this.initElement();
     this.ctx = this.canvas.getContext("2d");
     this.initBackground();
@@ -110,8 +111,14 @@ class KlzzSketch {
     });
     tools.forEach((type) => {
       on(this.drawCanvas.el, `${type}.submit`, (event) => {
-        console.log('111111111', type)
         const data = event.detail;
+        const imgData = this.ctx.getImageData(
+          0,
+          0,
+          this.options.width,
+          this.options.height
+        );
+        this.actionStack.push(imgData);
         CanvasHelper[type](this.ctx, data);
       });
     });
@@ -149,11 +156,17 @@ class KlzzSketch {
     this.toolType = toolName;
     this.trigger("toolchange", config);
   }
+  revokeAction() {
+    if (this.actionStack.length > 0) {
+      const imgData = this.actionStack.pop();
+      this.ctx.putImageData(imgData, 0, 0);
+    }
+  }
   textMeasure() {
-    const measureEl = this.measureEl = this.createElement('pre', {
-      'class': 'sketch-temp text-pre',
-      style: `font-size: ${ this.options.textSize }px; line-height: ${ this.options.textLineHeight }px;`
-    });
+    const measureEl = (this.measureEl = this.createElement("pre", {
+      class: "sketch-temp text-pre",
+      style: `font-size: ${this.options.textSize}px; line-height: ${this.options.textLineHeight}px;`,
+    }));
     this.el.appendChild(measureEl);
   }
 }
