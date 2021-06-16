@@ -1,0 +1,15 @@
+.sketch-contaniner {
+  display: block;
+  position: relative;
+  z-index: 990;
+  user-select: none;
+}
+.sketch_canvas ,.sketch_canvas-draw {
+  position: absolute;
+  user-select: none;
+}
+
+
+.sketch-contaniner.line {
+  cursor: url('../img/pen@1x.ico') 5 25, auto;
+}
