@@ -1,7 +1,7 @@
 /*
  * @Author: meng.chen
  * @Date: 2021-06-09 12:00:18
- * @LastEditTime: 2021-06-16 13:46:20
+ * @LastEditTime: 2021-06-16 16:32:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/index.js
@@ -41,6 +41,24 @@ const getArrowPoint = (beginPoint, endPoint, par) => {
   return [beginPoint, point4, point2, endPoint, point1, point3];
 }
 
+const transformText = (ctx, text, width) => {
+  let targetStr = text;
+  const strArr = [];
+  for (let i = 1; i <= targetStr.length; i += 1) {
+    const tempStr = targetStr.substring(0, i);
+    const textMetrics = ctx.measureText(tempStr);
+    if (textMetrics.width >= width) {
+      strArr.push(tempStr);
+      targetStr = targetStr.substr(i);
+      i = 1;
+    }
+    if (i === targetStr.length) {
+      strArr.push(targetStr);
+    }
+  }
+  const string = strArr.join('\n');
+  return string;
+};
 
 //默认的线条y颜色
 const COLOR_RED = "#f00";
@@ -172,6 +190,50 @@ class CanvasHelper {
         options.position.y * ctx.canvas.height + index * options.lineHeight + options.lineHeight / 2 + 2);
       return null;
     });
+    ctx.restore();
+  }
+  static ellipse(ctx, options) {
+    const width = ctx.canvas.width;
+    const height = ctx.canvas.height;
+    ctx.save();
+    ctx.strokeStyle = options.color || COLOR_RED;
+    ctx.lineWidth = options.lineWidth || 1;
+    if (options.thick) {
+      ctx.lineWidth = options.thick * Math.min(height, width);
+    }
+    const ellipse = {
+      width: (options.points[1].x - options.points[0].x) * width || 1,
+      height: (options.points[1].y - options.points[0].y) * height || 1,
+    };
+    const centerPoint = {
+      x: ((options.points[1].x - options.points[0].x) / 2 + options.points[0].x) * width,
+      y: ((options.points[1].y - options.points[0].y) / 2 + options.points[0].y) * height
+    };
+    ctx.save();
+    ctx.translate(centerPoint.x, centerPoint.y);
+    const rate = ellipse.height / ellipse.width;
+    ctx.transform(1, 0, 0, rate, 0, 0);
+    ctx.beginPath();
+    ctx.arc(0, 0, Math.abs(ellipse.width / 2), 0, 2 * Math.PI, false);
+    ctx.restore();
+    ctx.stroke();
+    ctx.restore();
+  }
+  static rect(ctx, options) {
+    const canvasWidth = ctx.canvas.width,
+      canvasHeight = ctx.canvas.height;
+    ctx.save();
+    ctx.strokeStyle = options.color || COLOR_RED;
+    ctx.lineWidth = options.lineWidth || LINE_DEFAULT_WIDTH;
+    if (options.thick) {
+      ctx.lineWidth = options.thick * Math.min(canvasHeight, canvasWidth);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeRect(
+      options.position.x * canvasWidth,
+      options.position.y * canvasHeight,
+      options.width * canvasWidth,
+      options.height * canvasHeight);
     ctx.restore();
   }
   

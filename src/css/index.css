@@ -17,7 +17,9 @@
 .sketch-contaniner.eraser {
   cursor: url('../img/eraser@1x.ico') 5 25, auto;
 }
-
+.sketch-contaniner.rect, .sketch-contaniner.ellipse {
+  cursor: url('../img/rect.ico') 9 17, auto;
+}
 
 .sketch-contaniner .sketch-temp {
   position: absolute;
