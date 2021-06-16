@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-16 10:46:43
+ * @LastEditTime: 2021-06-16 11:17:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -28,7 +28,7 @@ class KlzzSketch {
     options.toolType || (options.toolType = "");
     options.background || (options.background = "");
     this.options = options;
-    this.actionStack = [];
+    this.executionStack = [];
     this.el = this.initElement();
     this.ctx = this.canvas.getContext("2d");
     this.initBackground();
@@ -112,13 +112,13 @@ class KlzzSketch {
     tools.forEach((type) => {
       on(this.drawCanvas.el, `${type}.submit`, (event) => {
         const data = event.detail;
-        const imgData = this.ctx.getImageData(
-          0,
-          0,
-          this.options.width,
-          this.options.height
+        const New = JSON.parse(
+          JSON.stringify({
+            type,
+            data,
+          })
         );
-        this.actionStack.push(imgData);
+        this.executionStack.push(New);
         CanvasHelper[type](this.ctx, data);
       });
     });
@@ -156,10 +156,14 @@ class KlzzSketch {
     this.toolType = toolName;
     this.trigger("toolchange", config);
   }
-  revokeAction() {
-    if (this.actionStack.length > 0) {
-      const imgData = this.actionStack.pop();
-      this.ctx.putImageData(imgData, 0, 0);
+  revoke() {
+    CanvasHelper.clear(this.ctx);
+    this.executionStack.pop();
+    if (this.executionStack.length) {
+      this.executionStack.forEach((item) => {
+        const { type, data } = item;
+        CanvasHelper[type](this.ctx, data);
+      });
     }
   }
   textMeasure() {
