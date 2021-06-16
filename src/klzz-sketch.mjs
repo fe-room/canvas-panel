@@ -1,7 +1,7 @@
 /*
  * @Author: chenmeng
  * @Date: 2021-06-09 15:45:41
- * @LastEditTime: 2021-06-15 18:36:44
+ * @LastEditTime: 2021-06-16 10:02:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/sketch.js
@@ -25,7 +25,7 @@ class KlzzSketch {
     options.textLineHeight || (options.textLineHeight = TEXT_HEIGHT);
     options.width || (options.width = options.container.clientWidth);
     options.height || (options.height = options.container.clientHeight);
-    options.toolType || (options.toolType = "line");
+    options.toolType || (options.toolType = "");
     options.background || (options.background = "");
     this.options = options;
     this.el = this.initElement();
@@ -64,7 +64,6 @@ class KlzzSketch {
     });
   }
   trigger(type, payload) {
-    console.log(type,payload)
     //修改修改自定义事件的传参
     if (payload) {
       Object.assign(this[type].detail, payload);

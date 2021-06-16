@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-06-09 11:59:50
- * @LastEditTime: 2021-06-15 18:10:20
+ * @LastEditTime: 2021-06-16 10:01:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /canvas-demo/index.html
@@ -22,10 +22,6 @@
       window.Sketch = new KlzzSketch({
         container: document.getElementById('container'),
         background: "http://127.0.0.1:3000/background/dd.jpg"
-      })
-      Sketch.setTool('line',{
-        lineWidth: 5,
-        color: '#F00'
       })
     </script>
     <script>
@@ -48,7 +44,8 @@
           elem: '#colorpicker',
           change: function(color){
             Sketch.setTool('line',{
-              color: color
+              color: color,
+              lineWidth: 5
             })
           }  //绑定元素
         });
